@@ -4,8 +4,7 @@ import json
 from time import time
 from os import path
 
-default_cfg = {
-  'size': 19,
+default = {
   'komi': 7.5,
   'handicap': 0,
   'rules': 'chinese'
@@ -18,8 +17,8 @@ def __create_query(visit, initial, moves, game_cfg):
     "moves": moves,
     'rules': game_cfg['rules'],
     'komi': game_cfg['komi'],
-    'boardXSize': game_cfg['size'],
-    'boardYSize': game_cfg['size'],
+    'boardXSize': 19,
+    'boardYSize': 19,
     'maxVisits': visit
   }) + '\n'
 
@@ -55,16 +54,16 @@ def __get_initial(handicap):
   return stones
 
 
-def match(engine_path, black_cfg, white_cfg, config_path=None, n=10, game_cfg=default_cfg, logging=True, switch=False):
+def match(engine_path, black_cfg, white_cfg, cfg_path=None, n=10, game_cfg=default, log=True, switch=False):
 
-  default_cfg.update(game_cfg)
-  game_cfg = default_cfg
+  default.update(game_cfg)
+  game_cfg = default
 
-  if config_path is None:
-    config_path = path.join(path.dirname(engine_path), 'analysis_example.cfg')
+  if cfg_path is None:
+    cfg_path = path.join(path.dirname(engine_path), 'analysis_example.cfg')
 
-  black_engine = subprocess.Popen([engine_path, 'analysis', '-config', config_path, '-model', black_cfg['weight']], stdin=PIPE, stdout=PIPE, stderr=DEVNULL)
-  white_engine = subprocess.Popen([engine_path, 'analysis', '-config', config_path, '-model', white_cfg['weight']], stdin=PIPE, stdout=PIPE, stderr=DEVNULL)
+  black_engine = subprocess.Popen([engine_path, 'analysis', '-config', cfg_path, '-model', black_cfg['weight']], stdin=PIPE, stdout=PIPE, stderr=DEVNULL)
+  white_engine = subprocess.Popen([engine_path, 'analysis', '-config', cfg_path, '-model', white_cfg['weight']], stdin=PIPE, stdout=PIPE, stderr=DEVNULL)
 
   record = []
   result = {
@@ -124,13 +123,13 @@ def match(engine_path, black_cfg, white_cfg, config_path=None, n=10, game_cfg=de
     if data['moveInfos'][0]['winrate'] > 0.5:
       result['black'] += 1
       record.append(('B', False))
-      if logging:
+      if log:
         print('Match', j + 1)
         print('Black Engine Win')
     else:
       result['white'] += 1
       record.append(('W', False))
-      if logging:
+      if log:
         print('Match', j + 1)
         print('White Engine Win')
 
@@ -163,13 +162,13 @@ def match(engine_path, black_cfg, white_cfg, config_path=None, n=10, game_cfg=de
     if data['moveInfos'][0]['winrate'] > 0.5:
       result['white'] += 1
       record.append(('W', True))
-      if logging:
+      if log:
         print('Match', n + j + 1)
         print('White Engine Win')
     else:
       result['black'] += 1
       record.append(('B', True))
-      if logging:
+      if log:
         print('Match', n + j + 1)
         print('Black Engine Win')
   
@@ -180,16 +179,16 @@ def match(engine_path, black_cfg, white_cfg, config_path=None, n=10, game_cfg=de
 if __name__ == '__main__':
 
   black_cfg = {
-    'weight': '.\katago-v1.10.0\kata1-b10c128-11500.txt.gz',
-    'visit': 18
+    'weight': 'D:\Source\Python\KataMatch\katago-v1.10.0\kata1-b10c128-11500.txt.gz',
+    'visit': 20
   }
 
   white_cfg = {
-    'weight': '.\katago-v1.10.0\kata1-b10c128-11500.txt.gz',
+    'weight': 'katago-v1.10.0\kata1-b15c192-12200.txt.gz',
     'visit': 12
   }
 
   engine_path = '.\katago-v1.10.0\katago.exe'
 
-  result = match(engine_path, black_cfg, white_cfg, switch=True)
+  result = match(engine_path, black_cfg, white_cfg, switch=True, n=30)
   print(result)
