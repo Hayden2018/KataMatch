@@ -55,7 +55,10 @@ def __get_initial(handicap):
   return stones
 
 
-def match(engine_path, black_cfg, white_cfg, config_path=None, n=10, game_cfg=default_cfg, logging=True, switch=True):
+def match(engine_path, black_cfg, white_cfg, config_path=None, n=10, game_cfg=default_cfg, logging=True, switch=False):
+
+  default_cfg.update(game_cfg)
+  game_cfg = default_cfg
 
   if config_path is None:
     config_path = path.join(path.dirname(engine_path), 'analysis_example.cfg')
@@ -120,13 +123,13 @@ def match(engine_path, black_cfg, white_cfg, config_path=None, n=10, game_cfg=de
 
     if data['moveInfos'][0]['winrate'] > 0.5:
       result['black'] += 1
-      record.append(('black_engine', False))
+      record.append(('B', False))
       if logging:
         print('Match', j + 1)
         print('Black Engine Win')
     else:
       result['white'] += 1
-      record.append(('white_engine', False))
+      record.append(('W', False))
       if logging:
         print('Match', j + 1)
         print('White Engine Win')
@@ -159,13 +162,13 @@ def match(engine_path, black_cfg, white_cfg, config_path=None, n=10, game_cfg=de
 
     if data['moveInfos'][0]['winrate'] > 0.5:
       result['white'] += 1
-      record.append(('white_engine', True))
+      record.append(('W', True))
       if logging:
         print('Match', n + j + 1)
         print('White Engine Win')
     else:
       result['black'] += 1
-      record.append(('black_engine', True))
+      record.append(('B', True))
       if logging:
         print('Match', n + j + 1)
         print('Black Engine Win')
@@ -177,16 +180,16 @@ def match(engine_path, black_cfg, white_cfg, config_path=None, n=10, game_cfg=de
 if __name__ == '__main__':
 
   black_cfg = {
-    'weight': '\katago-v1.10.0\kata1-b15c192-12200.txt.gz',
+    'weight': '.\katago-v1.10.0\kata1-b10c128-11500.txt.gz',
     'visit': 18
   }
 
   white_cfg = {
-    'weight': '\katago-v1.10.0\kata1-b15c192-12200.txt.gz',
+    'weight': '.\katago-v1.10.0\kata1-b10c128-11500.txt.gz',
     'visit': 12
   }
 
-  engine_path = 'katago-v1.10.0\katago.exe'
+  engine_path = '.\katago-v1.10.0\katago.exe'
 
-  result = match(engine_path, black_cfg, white_cfg, n=20, switch=True)
+  result = match(engine_path, black_cfg, white_cfg, switch=True)
   print(result)
