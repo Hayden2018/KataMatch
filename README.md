@@ -7,7 +7,7 @@ from kataMatch import match
 
 ## **Parameters** 
 ```
-match(engine_path, black_cfg, white_cfg, cfg_path=None, n=10, game_cfg=default_cfg, log=True, switch=False)
+match(engine_path, black_cfg, white_cfg, cfg_path=None, n=10, game_cfg=default, log=True, switch=False)
 ```
 
 - **engine_path** - Absolute or relative path string to your katago.exe engine executable
